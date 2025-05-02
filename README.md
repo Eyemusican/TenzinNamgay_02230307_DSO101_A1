@@ -19,7 +19,7 @@ This assignment is divided into three major parts focusing on deploying a simple
 ### Frontend
 - User Interface for adding, editing, and deleting tasks
 
-![alt text](to-do/assets/image.png)
+![alt text](to-do/assets/image6.png)
 
 
 ### Data-base
