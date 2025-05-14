@@ -1,0 +1,32 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - main  # or master or any branch you want
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Publish Frontend Image
+        uses: elgohr/Publish-Docker-Github-Action@v5
+        with:
+          name: ${{ secrets.DOCKER_USERNAME }}/todo-frontend
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          workdir: frontend
+          tags: latest,frontend
+
+      - name: Publish Backend Image
+        uses: elgohr/Publish-Docker-Github-Action@v5
+        with:
+          name: ${{ secrets.DOCKER_USERNAME }}/todo-backend
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          workdir: backend
+          tags: latest,backend
