@@ -1,39 +1,53 @@
 pipeline {
-    agent any
-    
+    agent any  // Runs on any available Windows agent
+
     tools {
-        nodejs 'NodeJS-20.x'  // Matches the Global Tool Configuration name
+        nodejs 'NodeJS-20.x'  // Make sure this matches your Global Tool Configuration
     }
-    
+
     stages {
-        stage('Install') {
+        stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                echo 'Installing project dependencies...'
+                bat 'npm install'
             }
         }
-        
-        stage('Test') {
+
+        stage('Run Tests') {
             steps {
-                sh 'npm test -- --ci --reporters=jest-junit'
+                echo 'Running tests...'
+                bat 'npm test -- --ci --reporters=jest-junit'
             }
             post {
                 always {
-                    junit 'junit.xml'  // Path to test report
+                    echo 'Publishing test results...'
+                    junit 'junit.xml'  // Make sure jest-junit outputs to this file
                 }
             }
         }
-        
-        stage('Build') {
+
+        stage('Build Project') {
             steps {
-                sh 'npm run build'  // For React/Next.js apps
+                echo 'Building the project...'
+                bat 'npm run build'
             }
         }
-        
-        stage('Deploy') {
+
+        stage('Deploy to Staging') {
             steps {
-                sh 'echo "Deploying to staging..."'
-                // Add deployment commands (e.g., SSH, AWS S3, Docker)
+                echo 'Deploying to staging environment...'
+                // Replace the line below with your real deployment script
+                bat 'echo Deploying to staging...'
             }
+        }
+    }
+
+    post {
+        failure {
+            echo 'Pipeline failed. Check the logs.'
+        }
+        success {
+            echo 'Pipeline finished successfully!'
         }
     }
 }
