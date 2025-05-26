@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.2.3",
@@ -26,8 +27,13 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "jest-junit": "^16.0.0",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.2.8",
     "typescript": "^5"
+  },
+  "jest-junit": {
+    "outputDirectory": "./",
+    "outputName": "junit.xml"
   }
 }
