@@ -38,14 +38,21 @@ I created a todo table using pgAdmin, as shown in the image below, and successfu
 #### Backend Docker Image
 
 Dockerfile 
+
 ```
 FROM node:18-alpine
 WORKDIR /app
+
 COPY package*.json ./
 RUN npm install
 COPY . .
+RUN npx prisma generate
+RUN npm run build
+
 EXPOSE 5000
-CMD ["node", "server.js"]
+
+# Direct node command
+CMD ["node", "dist/index.js"]
 ```
 
 Build and Push: 
@@ -78,8 +85,48 @@ output for above :
 ![alt text](to-do/assets/image3.png)
 
 
+### Created Database on Render
 
-![alt text](image.png)
+1. Set up PostgreSQL database on Render
+2. Got the database connection URL for backend
 
+![alt text](image-3.png)
 
+### Deployed Backend Service on Render
+
+#### Deployment Method: Existing image from Docker Hub
+
+#### Image: eyemusician/be-todo:02230307
+
+#### Service Type: Web Service
+
+Environment Variables Set:
+
+```
+Hostname : dpg-d0aamjjuibrs73bmrmr0-a
+
+port : 5432
+
+Username : todo_db_odbg_user
+
+Password :  ********************
+
+```
+
+output : 
+![alt text](image-1.png)
+
+### Deployed Frontend Service on Render
+#### Deployment Method: Existing image from Docker Hub
+#### Image: yourdockerhub/fe-todo:studentID
+#### Service Type: Web Service
+
+Environment Variables Set:
+```
+REACT_APP_API_URL=https://be-todo-service.onrender.com
+```
+
+output : 
+
+![alt text](image-2.png)
 
