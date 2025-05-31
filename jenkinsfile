@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                url: 'https://github.com/Eyemusican/TenzinNamgay_02230307_DSO101_A1.git'
+                url: 'https://github.com/Eyemusican/TenzinNamgay_02230307_DSO101_A1'
             }
         }
 
