@@ -1,4 +1,4 @@
-# Introduction
+## Introduction
 
 This assignment is divided into three major parts focusing on deploying a simple web application using Docker and Render.com. The app is a basic **To-do List** built using a full-stack architecture with database integration and continuous deployment configuration.
 
