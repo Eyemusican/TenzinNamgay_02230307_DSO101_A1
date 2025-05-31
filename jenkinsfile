@@ -1,0 +1,81 @@
+pipeline {
+    agent any
+    tools {
+        nodejs 'NodeJS'
+    }
+
+    stages {
+        // Stage 1: Checkout Code
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                url: 'https://github.com/Eyemusican/TenzinNamgay_02230307_DSO101_A1.git'
+            }
+        }
+
+        // Stage 2: Install Dependencies
+        stage('Install Dependencies') {
+            steps {
+                dir('backend') {
+                    bat 'npm install'
+                }
+                dir('frontend') {
+                    bat 'npm install'
+                }
+            }
+        }
+
+        // Stage 3: Build
+        stage('Build') {
+            steps {
+                dir('frontend') {
+                    bat 'npm run build'
+                }
+                // Backend might not need build step, adjust as needed
+            }
+        }
+
+        // Stage 4: Run Tests
+        stage('Test') {
+            steps {
+                dir('backend') {
+                    bat 'npm test'
+                }
+                dir('frontend') {
+                    bat 'npm test'
+                }
+            }
+            post {
+                always {
+                    // Publish test results if junit.xml is generated
+                    publishTestResults testResultsPattern: '**/junit.xml'
+                }
+            }
+        }
+
+        // Stage 5: Deploy (Docker)
+        stage('Deploy') {
+            steps {
+                script {
+                    // Build and push backend image
+                    dir('backend') {
+                        def backendImage = docker.build("eyemusican/be-todo:${env.BUILD_NUMBER}")
+                        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-creds') {
+                            backendImage.push()
+                            backendImage.push('latest')
+                        }
+                    }
+                    
+                    // Build and push frontend image
+                    dir('frontend') {
+                        def frontendImage = docker.build("eyemusican/fe-todo:${env.BUILD_NUMBER}")
+                        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-creds') {
+                            frontendImage.push()
+                            frontendImage.push('latest')
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
