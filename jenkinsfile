@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        nodejs 'nodejs'
+        nodejs 'NodeJS'  // Make sure this matches your Jenkins tool configuration
     }
     stages {
         stage('Checkout') {
@@ -33,29 +33,47 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir('backend') {
-                    bat 'npm run build || echo "No build script in backend"'
+                    script {
+                        try {
+                            bat 'npm run build'
+                        } catch (Exception e) {
+                            echo "No build script in backend or build failed: ${e.getMessage()}"
+                        }
+                    }
                 }
             }
         }
         stage('Build Frontend') {
             steps {
                 dir('frontend') {
-                    bat 'npm run build || echo "No build script in frontend"'
+                    script {
+                        try {
+                            bat 'npm run build'
+                        } catch (Exception e) {
+                            echo "No build script in frontend or build failed: ${e.getMessage()}"
+                        }
+                    }
                 }
             }
         }
         stage('Deploy Backend Image') {
             steps {
                 script {
-                    // Build Docker image for backend
-                    bat 'docker build -t eyemusican/node-app:latest -f backend/Dockerfile backend/'
-                    
-                    // Login and push to Docker Hub using credentials
-                    withCredentials([string(credentialsId: 'docker-hub-creds', variable: 'DOCKER_PWD')]) {
-                        bat '''
-                            echo %DOCKER_PWD% | docker login -u eyemusican --password-stdin
-                            docker push eyemusican/node-app:latest
-                        '''
+                    try {
+                        // Build Docker image for backend
+                        bat 'docker build -t eyemusican/node-app:latest -f backend/Dockerfile backend/'
+                        
+                        // Login and push to Docker Hub using credentials
+                        withCredentials([string(credentialsId: 'docker-hub-creds', variable: 'DOCKER_PWD')]) {
+                            bat '''
+                                echo %DOCKER_PWD% | docker login -u eyemusican --password-stdin
+                                docker push eyemusican/node-app:latest
+                            '''
+                        }
+                        echo "Backend image deployed successfully!"
+                    } catch (Exception e) {
+                        echo "Backend deployment failed: ${e.getMessage()}"
+                        throw e
                     }
                 }
             }
@@ -63,15 +81,21 @@ pipeline {
         stage('Deploy Frontend Image') {
             steps {
                 script {
-                    // Build Docker image for frontend
-                    bat 'docker build -t eyemusican/frontend-app:latest -f frontend/Dockerfile frontend/'
-                    
-                    // Login and push to Docker Hub using credentials
-                    withCredentials([string(credentialsId: 'docker-hub-creds', variable: 'DOCKER_PWD')]) {
-                        bat '''
-                            echo %DOCKER_PWD% | docker login -u eyemusican --password-stdin
-                            docker push eyemusican/frontend-app:latest
-                        '''
+                    try {
+                        // Build Docker image for frontend
+                        bat 'docker build -t eyemusican/frontend-app:latest -f frontend/Dockerfile frontend/'
+                        
+                        // Login and push to Docker Hub using credentials
+                        withCredentials([string(credentialsId: 'docker-hub-creds', variable: 'DOCKER_PWD')]) {
+                            bat '''
+                                echo %DOCKER_PWD% | docker login -u eyemusican --password-stdin
+                                docker push eyemusican/frontend-app:latest
+                            '''
+                        }
+                        echo "Frontend image deployed successfully!"
+                    } catch (Exception e) {
+                        echo "Frontend deployment failed: ${e.getMessage()}"
+                        throw e
                     }
                 }
             }
@@ -81,7 +105,11 @@ pipeline {
         always {
             // Clean up Docker images to save space
             script {
-                bat 'docker system prune -f || echo "Docker cleanup failed"'
+                try {
+                    bat 'docker system prune -f'
+                } catch (Exception e) {
+                    echo "Docker cleanup failed: ${e.getMessage()}"
+                }
             }
             // Clean workspace for next build
             cleanWs()
