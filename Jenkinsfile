@@ -42,13 +42,13 @@ pipeline {
             steps {
                 script {
                     // Build Docker image for backend
-                    bat 'docker build -t eyemusican/node-app:latest -f to-do/Dockerfile to-do/'
+                    bat 'docker build -t eyemusician/node-app:latest -f to-do/Dockerfile to-do/'
                     
                     // Login and push to Docker Hub using credentials
                     withCredentials([string(credentialsId: 'docker-hub-creds', variable: 'DOCKER_PWD')]) {
                         bat '''
-                            echo %DOCKER_PWD% | docker login -u eyemusican --password-stdin
-                            docker push eyemusican/node-app:latest
+                            echo %DOCKER_PWD% | docker login -u eyemusician --password-stdin
+                            docker push eyemusician/node-app:latest
                         '''
                     }
                 }
@@ -58,13 +58,13 @@ pipeline {
             steps {
                 script {
                     // Build Docker image for frontend
-                    bat 'docker build -t eyemusican/frontend-app:latest -f frontend/Dockerfile frontend/'
+                    bat 'docker build -t eyemusician/frontend-app:latest -f frontend/Dockerfile frontend/'
                     
                     // Login and push to Docker Hub using credentials
                     withCredentials([string(credentialsId: 'docker-hub-creds', variable: 'DOCKER_PWD')]) {
                         bat '''
-                            echo %DOCKER_PWD% | docker login -u eyemusican --password-stdin
-                            docker push eyemusican/frontend-app:latest
+                            echo %DOCKER_PWD% | docker login -u eyemusician --password-stdin
+                            docker push eyemusician/frontend-app:latest
                         '''
                     }
                 }
