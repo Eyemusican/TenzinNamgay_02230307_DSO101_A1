@@ -80,9 +80,6 @@ docker build -t eyemusician/fe-todo:02230307 .
 docker push eyemusician/fe-todo:02230307
 ```
 
-output for above :
-
-![alt text](to-do/assets/image3.png)
 
 
 ### Created Database on Render
@@ -90,7 +87,7 @@ output for above :
 1. Set up PostgreSQL database on Render
 2. Got the database connection URL for backend
 
-![alt text](image-3.png)
+![to-do/assets/images/image-3.png](to-do/assets/images/image-3.png)
 
 ### Deployed Backend Service on Render
 
@@ -114,7 +111,8 @@ Password :  ********************
 ```
 
 output : 
-![alt text](image-1.png)
+
+![to-do/assets/images/image-1.png](to-do/assets/images/image-1.png)
 
 ### Deployed Frontend Service on Render
 #### Deployment Method: Existing image from Docker Hub
@@ -128,7 +126,7 @@ REACT_APP_API_URL=https://be-todo-service.onrender.com
 
 output : 
 
-![alt text](image-2.png)
+![to-do/assets/images/image-2.png](to-do/assets/images/image-2.png)
 
 
 
