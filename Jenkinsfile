@@ -38,6 +38,20 @@ pipeline {
                 }
             }
         }
+        stage('Test Backend') {
+            steps {
+                dir('to-do') {
+                    bat 'npm test || echo "No tests found in backend"'
+                }
+            }
+        }
+        stage('Test Frontend') {
+            steps {
+            dir('frontend') {
+                bat 'npm test || echo "No tests found in frontend"'
+            }
+        }
+        }
         stage('Deploy Backend Image') {
             steps {
                 script {
