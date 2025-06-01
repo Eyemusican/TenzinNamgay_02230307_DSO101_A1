@@ -45,9 +45,11 @@ pipeline {
                     bat 'docker build -t eyemusician/node-app:latest -f to-do/Dockerfile to-do/'
                     
                     // Login and push to Docker Hub using credentials
-                    withCredentials([string(credentialsId: 'docker-hub-creds', variable: 'DOCKER_PWD')]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', 
+                                   usernameVariable: 'DOCKER_USER', 
+                                   passwordVariable: 'DOCKER_PASS')]) {
                         bat '''
-                            echo %DOCKER_PWD% | docker login -u eyemusician --password-stdin
+                            echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
                             docker push eyemusician/node-app:latest
                         '''
                     }
@@ -61,9 +63,11 @@ pipeline {
                     bat 'docker build -t eyemusician/frontend-app:latest -f frontend/Dockerfile frontend/'
                     
                     // Login and push to Docker Hub using credentials
-                    withCredentials([string(credentialsId: 'docker-hub-creds', variable: 'DOCKER_PWD')]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', 
+                                   usernameVariable: 'DOCKER_USER', 
+                                   passwordVariable: 'DOCKER_PASS')]) {
                         bat '''
-                            echo %DOCKER_PWD% | docker login -u eyemusician --password-stdin
+                            echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
                             docker push eyemusician/frontend-app:latest
                         '''
                     }
