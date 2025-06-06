@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    image: eyemusician/be-todo-secure:02230307  
+    secrets:
+      - db_password
+      - api_key
+    environment:
+      - DB_PASSWORD_FILE=/run/secrets/db_password
+      - API_KEY_FILE=/run/secrets/api_key
+    ports:
+      - "5000:5000"
+
+  frontend:
+    image: eyemusician/fe-todo-secure:02230307  
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+  api_key:
+    file: ./secrets/api_key.txt
